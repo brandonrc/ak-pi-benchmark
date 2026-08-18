@@ -4,6 +4,12 @@ Run `20260817-211049` (backend v1.7.6, UI disabled). Numbers are server-side,
 sampled on the Pi at 0.25 s. See `results/report-*.md` for the full per-phase
 tables and `README.md` for methodology.
 
+> **Out of the box — read as a performance floor.** This is a bone-stock Raspberry
+> Pi Zero 2 W: the stock 64-bit ARM binary, **no overclock, no OS/network tuning, and
+> no heatsink** (not even the small one most people add). The SoC was already touching
+> 63 °C under load. Proper cooling and a tuned OS would only move these numbers up —
+> everything here is worst-case.
+
 ## Headline
 
 **The backend is genuinely light — a full multi-format registry proxy idles at a

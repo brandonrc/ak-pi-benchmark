@@ -61,6 +61,12 @@ section{margin-top:clamp(40px,6vw,68px);}
 .tile .v{font-size:33px;font-weight:700;letter-spacing:-.02em;margin-top:8px;line-height:1;font-variant-numeric:tabular-nums;}
 .tile .v small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0;}
 .tile .d{font-size:13px;color:var(--muted);margin-top:7px;}
+.note{margin-top:20px;background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:12px;padding:15px 18px;display:flex;gap:15px;align-items:flex-start;}
+.note .nlab{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;white-space:nowrap;padding-top:3px;}
+.note p{margin:0;font-size:14px;color:var(--muted);} .note b{color:var(--ink);font-weight:600;}
+@media(max-width:640px){.note{flex-direction:column;gap:6px;}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;
   padding:20px 20px 14px;box-shadow:var(--shadow);}
 .card h3{margin:0;font-size:16px;font-weight:600;}
@@ -132,6 +138,11 @@ section{margin-top:clamp(40px,6vw,68px);}
     <div class="tile crit"><div class="k">Under overload</div><div class="v">47× <small>slower</small></div><div class="d">p95 150 ms → 7 s</div></div>
   </div>
 
+  <div class="note">
+    <span class="nlab">Out of the box</span>
+    <p>These are <b>worst-case</b> numbers. A bone-stock Raspberry Pi Zero 2 W running the stock 64-bit ARM binary — <b>no overclock, no OS or network tuning, and no heatsink</b> (not even the little one most people add). Read every figure here as a <b>performance floor</b>: proper cooling and a tuned OS would only move it up.</p>
+  </div>
+
   <section>
     <div class="sec-head"><span class="sec-num">01</span><h2>The throughput knee</h2></div>
     <p class="sec-sub">Throughput climbs with load until concurrency 8, then more clients make it <em>slower</em>, not faster — the signature of an overloaded queue. The green line marks the last healthy point.</p>
@@ -183,6 +194,7 @@ section{margin-top:clamp(40px,6vw,68px);}
       <div class="takeaway"><span class="tn">CONC</span><p><b>Cap concurrency at ~8.</b> Beyond the knee the box does <em>less</em> work and fails more. A small connection limit (nginx <code>limit_conn</code>) keeps latency sane under a stampede instead of collapsing.</p></div>
       <div class="takeaway"><span class="tn">CACHE</span><p><b>Pre-warm hot packages.</b> Cold pulls cost 2–5× the CPU and pull from upstream over that same thin radio. A high cache hit-rate is what keeps this board cool and quick.</p></div>
       <div class="takeaway"><span class="tn">RAM</span><p><b>Move Postgres off-box</b> (or add RAM). It — not the ~20–90 MB backend — is what forces this 415 MB board onto swap; the binary itself is genuinely light.</p></div>
+      <div class="takeaway"><span class="tn">TUNE</span><p><b>Cool it and tune it.</b> This ran on a stock, heatsink-less board already touching 63 °C, on default OS and network settings — all untapped headroom. A heatsink plus basic tuning lifts the whole curve. Everything here is the floor, not the ceiling.</p></div>
     </div>
   </section>
 
