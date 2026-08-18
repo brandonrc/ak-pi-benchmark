@@ -1,0 +1,20 @@
+[package]
+name = "ak-cargo-workload"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# A fixed dependency set with a committed Cargo.lock (`--locked`) so the proxy
+# serves the exact same index entries + crate tarballs on every run. Moderate
+# tree (~dozens of transitive crates) to exercise many small sparse-index
+# fetches plus crate-file downloads.
+[dependencies]
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
+anyhow = "1.0.89"
+thiserror = "1.0.64"
+clap = { version = "4.5.20", features = ["derive"] }
+regex = "1.11.0"
+rand = "0.8.5"
+itertools = "0.13.0"
+chrono = "0.4.38"

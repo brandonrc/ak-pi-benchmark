@@ -1,0 +1,78 @@
+[36m[21:10:49][0m ################ ak-pi-zero benchmark run 20260817-211049 ################
+[36m[21:10:49][0m client has python3: Python 3.12.6
+[36m[21:10:49][0m client has cargo: cargo 1.94.0 (85eff7c80 2026-01-15)
+[36m[21:10:49][0m client has curl: curl 8.7.1 (x86_64-apple-darwin25.0) libcurl/8.7.1 (SecureTransport) LibreSSL/3.3.6 zlib/1.2.12 nghttp2/1.68.0
+[36m[21:10:49][0m client has ssh: ssh: illegal option -- -
+[36m[21:10:49][0m ssh to geraci@192.168.42.107 ...
+[36m[21:10:50][0m Pi reachable: Raspberry Pi Zero 2 W Rev 1.0 4 415MB RAM 
+[36m[21:10:51][0m backend /health via TLS: HTTP 200
+[36m[21:10:51][0m services: active active active
+[36m[21:10:52][0m UI is disabled (good — isolates the backend)
+[36m[21:10:52][0m preflight PASSED
+[36m[21:10:53][0m API unlocked; token cached
+[36m[21:10:53][0m repo 'pypi-proxy' already exists
+[36m[21:10:54][0m repo 'cargo-proxy' already exists
+[36m[21:10:54][0m verifying anonymous access to the proxy endpoints
+[36m[21:11:11][0m   pypi simple index (anon): HTTP 200
+[36m[21:11:11][0m   cargo config.json (anon): HTTP 200
+[36m[21:11:11][0m setup complete
+[36m[21:11:11][0m === pypi benchmark (20260817-211111) ===
+[36m[21:11:14][0m sampler started (interval 0.25s)
+[36m[21:11:20][0m resetting proxy repo for a COLD cache (restarts backend to clear caches)
+[36m[21:11:30][0m COLD pull (proxy fetches from pypi.org, caches, streams to client)
+[36m[21:11:57][0m WARM pull (proxy serves from its own cache)
+[36m[21:12:13][0m sampler stopped;       77 rows -> results/pypi-20260817-211111.csv
+[36m[21:12:13][0m client: COLD 19.709322000s 19367623B 13 files | WARM 7.848311000s 19367623B 13 files
+[36m[21:12:13][0m wrote results/pypi-20260817-211111.csv and results/pypi-20260817-211111.client.json
+[36m[21:12:13][0m === cargo benchmark (20260817-211213) ===
+[36m[21:12:15][0m sampler started (interval 0.25s)
+[36m[21:12:21][0m resetting proxy repo for a COLD cache (restarts backend to clear caches)
+[36m[21:12:30][0m COLD fetch (proxy pulls index+crates from crates.io)
+[36m[21:12:55][0m WARM fetch (proxy serves from cache)
+[36m[21:13:13][0m sampler stopped;       51 rows -> results/cargo-20260817-211213.csv
+[36m[21:13:13][0m client: COLD 16.476784000s 77 crates 65312407B | WARM 7.473598000s 77 crates 65312407B
+[36m[21:13:14][0m wrote results/cargo-20260817-211213.csv and results/cargo-20260817-211213.client.json
+wrote results/_body-20260817-211049.md
+[36m[21:13:16][0m ################ report: results/report-20260817-211049.md ################
+# ak-pi-zero benchmark report — 20260817-211049
+
+**Target:** `geraci@192.168.42.107` — Raspberry Pi Zero 2 W Rev 1.0, 
+4 cores, 415 MB RAM, 
+kernel 6.18.34+rpt-rpi-v8, backend 1.7.6.
+
+UI (`artifact-keeper-web`) disabled for these numbers. Client drives pip/cargo
+from a dev machine against the Pi's nginx TLS proxy; the sampler records
+server-side resource use on the Pi at 0.25s resolution.
+
+## Per-phase resource profile
+
+### cargo  
+`cargo-20260817-211213.csv`
+
+- **client cold**: 16.5s, 62.3 MB, 77 artifacts, 3.78 MB/s
+- **client warm**: 7.5s, 62.3 MB, 77 artifacts, 8.33 MB/s
+
+| phase | s | be RSS peak | be PSS peak | be swap peak | be CPU-s | pg RSS peak | pg CPU-s | sys mem peak | swap peak | Δswap | load | °C | net↓ | net↑ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| baseline | 7 | 54 MB | 53 MB | 38 MB | 0.0 | 117 MB | 0.1 | 273 MB | 223 MB | -5 | 2.44 | 52 | 0.0 | 0.0 |
+| cargo_reset | 8 | 66 MB | 65 MB | 57 MB | 10.3 | 127 MB | 2.4 | 263 MB | 238 MB | -63 | 2.21 | 53 | 0.0 | 0.0 |
+| cargo_cold | 17 | 69 MB | 68 MB | 44 MB | 10.7 | 670 MB | 5.9 | 299 MB | 259 MB | +86 | 11.10 | 57 | 13.0 | 13.6 |
+| idle_between | 6 | 27 MB | 25 MB | 50 MB | 0.0 | 538 MB | 0.1 | 273 MB | 274 MB | -5 | 11.09 | 56 | 0.0 | 2.1 |
+| cargo_warm | 7 | 34 MB | 33 MB | 43 MB | 3.9 | 534 MB | 1.6 | 298 MB | 265 MB | -15 | 10.60 | 58 | 0.1 | 8.7 |
+| cooldown | 5 | 34 MB | 33 MB | 38 MB | 0.0 | 523 MB | 0.0 | 294 MB | 251 MB | -0 | 10.60 | 55 | 0.0 | 0.0 |
+
+### pypi  
+`pypi-20260817-211111.csv`
+
+- **client cold**: 19.7s, 18.5 MB, 13 artifacts, 0.94 MB/s
+- **client warm**: 7.8s, 18.5 MB, 13 artifacts, 2.35 MB/s
+
+| phase | s | be RSS peak | be PSS peak | be swap peak | be CPU-s | pg RSS peak | pg CPU-s | sys mem peak | swap peak | Δswap | load | °C | net↓ | net↑ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| baseline | 6 | 21 MB | 20 MB | 56 MB | 0.0 | 363 MB | 0.0 | 277 MB | 284 MB | -1 | 3.49 | 50 | 0.0 | 0.0 |
+| pypi_reset | 9 | 67 MB | 65 MB | 56 MB | 24.1 | 379 MB | 8.8 | 289 MB | 276 MB | -104 | 3.25 | 51 | 0.0 | 0.0 |
+| pypi_cold | 20 | 85 MB | 82 MB | 1 MB | 7.1 | 132 MB | 0.8 | 290 MB | 175 MB | +2 | 3.25 | 53 | 34.1 | 25.0 |
+| idle_between | 6 | 76 MB | 75 MB | 1 MB | 0.0 | 133 MB | 0.1 | 294 MB | 174 MB | -0 | 2.86 | 51 | 0.0 | 0.0 |
+| pypi_warm | 7 | 89 MB | 87 MB | 38 MB | 1.3 | 133 MB | 0.3 | 293 MB | 227 MB | +52 | 2.86 | 54 | 0.1 | 22.9 |
+| cooldown | 5 | 53 MB | 52 MB | 38 MB | 0.0 | 115 MB | 0.1 | 269 MB | 225 MB | -2 | 2.79 | 53 | 0.0 | 0.0 |
+

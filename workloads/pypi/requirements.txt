@@ -1,0 +1,17 @@
+# Fixed, pinned wheel set pulled through the pypi proxy. Fetched as linux
+# cp311 manylinux2014_x86_64 wheels (see bench_pypi.sh) so the byte volume is
+# identical regardless of the client OS. Mix of tiny pure-python wheels and one
+# large native wheel (numpy) to exercise streaming of a big artifact.
+certifi==2024.8.30
+charset-normalizer==3.3.2
+idna==3.10
+urllib3==2.2.3
+requests==2.32.3
+click==8.1.7
+PyYAML==6.0.2
+packaging==24.1
+markdown-it-py==3.0.0
+mdurl==0.1.2
+Pygments==2.18.0
+rich==13.9.2
+numpy==2.1.2

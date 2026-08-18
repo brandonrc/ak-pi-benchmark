@@ -1,0 +1,3 @@
+{"benchmark":"pypi","timestamp":"20260817-211111",
+ "cold":{"seconds":19.709322000,"bytes":19367623,"files":13},
+ "warm":{"seconds":7.848311000,"bytes":19367623,"files":13}}

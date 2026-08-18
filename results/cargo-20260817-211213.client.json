@@ -1,0 +1,3 @@
+{"benchmark":"cargo","timestamp":"20260817-211213",
+ "cold":{"seconds":16.476784000,"crates":77,"bytes":65312407},
+ "warm":{"seconds":7.473598000,"crates":77,"bytes":65312407}}

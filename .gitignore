@@ -1,0 +1,8 @@
+# transient client state; results themselves ARE committed
+results/.token
+workloads/cargo/.cargo/
+workloads/cargo/target/
+**/__pycache__/
+*.pyc
+.DS_Store
+certs/ak.crt
