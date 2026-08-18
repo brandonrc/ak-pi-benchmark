@@ -21,7 +21,10 @@ scripts/
   sampler.sh            runs ON the Pi; samples resources -> CSV until SIGTERM
   bench_pypi.sh         pip download a pinned wheel set, cold then warm, with sampling
   bench_cargo.sh        cargo fetch a pinned crate set, cold then warm, with sampling
+  bench_load.sh         MAX-OUT: concurrency sweep (1->128) vs a warm-cached wheel
+  loadgen.py            dependency-free keep-alive HTTPS load generator
   analyze.py            CSV (+ client.json) -> per-phase markdown tables
+  analyze_load.py       load sweep -> merged per-concurrency JSON (for plots)
 run_all.sh              preflight -> setup -> pypi -> cargo -> report
 workloads/
   pypi/requirements.txt pinned wheels (fetched as linux cp311 manylinux2014_x86_64)
@@ -41,6 +44,13 @@ Prereqs on the client: `python3` (pip), `cargo`, `curl`, `ssh`, and key-based SS
 That produces `results/report-<timestamp>.md` plus the raw `results/*.csv` and `results/*.client.json`. Individual stages are runnable on their own (`bash scripts/bench_pypi.sh`, etc.).
 
 Everything is config-driven — point `config.env` at a different box, change `SAMPLE_INTERVAL`, or edit the pinned workloads and re-run. Results are meant to be committed so runs can be compared over time.
+
+**Max-out sweep:** `bash scripts/bench_load.sh` ramps parallel clients (1→128) against a
+warm-cached artifact to find the saturation point (throughput knee, latency blow-up,
+error onset, CPU/thermal ceiling). `scripts/analyze_load.py` merges it into
+`results/load-dataset.json`. A shareable plotted summary of one run lives at
+`results/maxout-dashboard.html` (published:
+https://claude.ai/code/artifact/9a54eced-da44-4fcc-8769-1283d53e2391).
 
 ## Reproducibility choices
 

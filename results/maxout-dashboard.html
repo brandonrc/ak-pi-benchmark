@@ -1,0 +1,315 @@
+<title>Pi Zero 2 W Saturation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --surface:#fcfcfb; --panel:#ffffff; --panel-2:#f6f6f2;
+  --ink:#16160f; --muted:#57564f; --faint:#8a897f; --line:#e7e6df; --line-2:#efeee8;
+  --accent:#2a78d6; --accent-soft:rgba(42,120,214,.12);
+  --warm:#eb6834; --good:#1baf7a; --amber:#eda100; --crit:#e34948;
+  --lat1:#a9cbf1; --lat2:#4a90e2; --lat3:#1c56a6;
+  --shadow:0 1px 2px rgba(20,20,15,.05),0 8px 24px rgba(20,20,15,.06);
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --surface:#1a1a19; --panel:#232320; --panel-2:#2a2a26;
+    --ink:#f4f3ec; --muted:#b7b6aa; --faint:#84837a; --line:#34342f; --line-2:#2b2b27;
+    --accent:#3987e5; --accent-soft:rgba(57,135,229,.16);
+    --warm:#f0793f; --good:#22c088; --amber:#e0a520; --crit:#f0605f;
+    --lat1:#33517a; --lat2:#4a90e2; --lat3:#8fbdf0;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --surface:#1a1a19; --panel:#232320; --panel-2:#2a2a26;
+  --ink:#f4f3ec; --muted:#b7b6aa; --faint:#84837a; --line:#34342f; --line-2:#2b2b27;
+  --accent:#3987e5; --accent-soft:rgba(57,135,229,.16);
+  --warm:#f0793f; --good:#22c088; --amber:#e0a520; --crit:#f0605f;
+  --lat1:#33517a; --lat2:#4a90e2; --lat3:#8fbdf0;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.55;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(18px,4vw,40px) 80px;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);font-weight:500;}
+h1{font-size:clamp(30px,5.2vw,50px);line-height:1.04;letter-spacing:-.02em;font-weight:700;
+  margin:.35em 0 .1em;text-wrap:balance;}
+.lede{font-size:clamp(16px,2.3vw,19px);color:var(--muted);max-width:64ch;margin:.4em 0 0;text-wrap:pretty;}
+.lede b{color:var(--ink);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);
+  background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;}
+.chip b{color:var(--ink);font-weight:600;}
+section{margin-top:clamp(40px,6vw,68px);}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;}
+.sec-head h2{font-size:23px;letter-spacing:-.01em;margin:0;font-weight:600;}
+.sec-num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);font-weight:500;}
+.sec-sub{color:var(--muted);margin:.2em 0 26px;max-width:70ch;}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px;}
+@media(max-width:720px){.tiles{grid-template-columns:repeat(2,1fr);}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:.9;}
+.tile.warm::before{background:var(--warm);} .tile.crit::before{background:var(--crit);} .tile.good::before{background:var(--good);}
+.tile .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+.tile .v{font-size:33px;font-weight:700;letter-spacing:-.02em;margin-top:8px;line-height:1;font-variant-numeric:tabular-nums;}
+.tile .v small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0;}
+.tile .d{font-size:13px;color:var(--muted);margin-top:7px;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:20px 20px 14px;box-shadow:var(--shadow);}
+.card h3{margin:0;font-size:16px;font-weight:600;}
+.card .cap{color:var(--muted);font-size:13px;margin:2px 0 10px;}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:2px 0 6px;font-size:12.5px;color:var(--muted);}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block;}
+.chart{width:100%;height:auto;display:block;overflow:visible;}
+.grid line{stroke:var(--line-2);stroke-width:1;}
+.axis line{stroke:var(--line);stroke-width:1;}
+.axis text,.tick text{fill:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:11px;}
+.serie{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;}
+.s-tput{stroke:var(--accent);} .s-net{stroke:var(--accent);} .s-cpu{stroke:var(--warm);}
+.s-load{stroke:var(--amber);} .s-temp{stroke:var(--crit);} .s-err{stroke:var(--crit);}
+.s-l1{stroke:var(--lat1);} .s-l2{stroke:var(--lat2);} .s-l3{stroke:var(--lat3);}
+.dot{stroke:var(--panel);stroke-width:2;}
+.d-tput{fill:var(--accent);} .d-net{fill:var(--accent);} .d-cpu{fill:var(--warm);}
+.d-load{fill:var(--amber);} .d-temp{fill:var(--crit);} .d-err{fill:var(--crit);}
+.d-l1{fill:var(--lat1);} .d-l2{fill:var(--lat2);} .d-l3{fill:var(--lat3);}
+.knee{stroke:var(--good);stroke-width:1.4;stroke-dasharray:4 4;}
+.knee-txt{fill:var(--good);font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;}
+.area-tput{fill:var(--accent-soft);stroke:none;}
+.small-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:14px;}
+@media(max-width:860px){.small-grid{grid-template-columns:repeat(2,1fr);}}
+.mini{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 13px 8px;box-shadow:var(--shadow);}
+.mini .mk{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+.mini .mv{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px;}
+.mini .mv small{font-size:11px;color:var(--muted);font-weight:500;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:720px){.grid2{grid-template-columns:1fr;}}
+.bars text{font-family:"IBM Plex Mono",monospace;}
+.crosshair{stroke:var(--faint);stroke-width:1;stroke-dasharray:3 3;opacity:0;}
+.tt{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--line);
+  border-radius:9px;padding:8px 11px;font-size:12px;box-shadow:var(--shadow);opacity:0;transition:opacity .08s;
+  transform:translate(-50%,-115%);white-space:nowrap;z-index:5;}
+.tt .th{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);margin-bottom:3px;}
+.tt .tr{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums;}
+.tt .tr i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+.tt b{font-weight:600;}
+.host{position:relative;}
+.foot{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;}
+.foot b{color:var(--ink);}
+.foot code{font-family:"IBM Plex Mono",monospace;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:5px;padding:1px 6px;font-size:12px;color:var(--ink);}
+.takeaway{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line-2);}
+.takeaway:last-child{border-bottom:none;}
+.takeaway .tn{font-family:"IBM Plex Mono",monospace;color:var(--accent);font-weight:600;font-size:13px;flex:0 0 auto;padding-top:1px;}
+.takeaway p{margin:0;font-size:14.5px;color:var(--muted);} .takeaway b{color:var(--ink);font-weight:600;}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Artifact Keeper · edge load test</div>
+    <h1>Where a $15 Pi runs out of road</h1>
+    <p class="lede">A Raspberry Pi Zero 2 W serving a cached package through Artifact Keeper's TLS proxy. We ramped parallel clients from 1 to 128 to find the ceiling. It holds <b>~52 requests/second</b>, then throughput <b>collapses</b> — and the wall is the <b>2.4 GHz Wi‑Fi</b>, not the CPU.</p>
+    <div class="chips">
+      <span class="chip">Raspberry Pi Zero 2 W · <b>4× A53 @ 1 GHz</b></span>
+      <span class="chip"><b>415 MB</b> RAM</span>
+      <span class="chip">no containers · systemd</span>
+      <span class="chip">target: <b>idna wheel, 70 KB</b>, warm cache</span>
+      <span class="chip">backend <b>v1.7.6</b></span>
+    </div>
+  </header>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">Peak throughput</div><div class="v">52 <small>req/s</small></div><div class="d">at concurrency 4–8</div></div>
+    <div class="tile good"><div class="k">Sweet spot</div><div class="v">4–8 <small>clients</small></div><div class="d">knee before collapse</div></div>
+    <div class="tile warm"><div class="k">Real bottleneck</div><div class="v">~30 <small>Mbps</small></div><div class="d">Wi‑Fi, not CPU (&lt;1 core)</div></div>
+    <div class="tile crit"><div class="k">Under overload</div><div class="v">47× <small>slower</small></div><div class="d">p95 150 ms → 7 s</div></div>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>The throughput knee</h2></div>
+    <p class="sec-sub">Throughput climbs with load until concurrency 8, then more clients make it <em>slower</em>, not faster — the signature of an overloaded queue. The green line marks the last healthy point.</p>
+    <div class="card host">
+      <h3>Requests served per second</h3>
+      <div class="cap">Sustained req/s vs. parallel clients · higher is better · log‑scaled x</div>
+      <div id="c-tput"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Latency falls off a cliff</h2></div>
+    <p class="sec-sub">Past the knee the box can't drain the queue, so requests pile up. Tail latency (p99) blows past <b>10 seconds</b> — long before the CPU is even busy.</p>
+    <div class="card host">
+      <h3>Response latency percentiles</h3>
+      <div class="cap">Milliseconds vs. parallel clients · lower is better · both axes log‑scaled</div>
+      <div class="legend">
+        <span><i style="background:var(--lat1)"></i>p50 (median)</span>
+        <span><i style="background:var(--lat2)"></i>p95</span>
+        <span><i style="background:var(--lat3)"></i>p99 (worst tail)</span>
+      </div>
+      <div id="c-lat"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>What actually saturated</h2></div>
+    <p class="sec-sub">The tell: network throughput <b>plateaus at ~30 Mbps</b> exactly where req/s does, while the backend never burns even a full core. Errors and heat climb with the queue, not the compute. This box is <b>network‑bound</b>.</p>
+    <div class="small-grid" id="minis"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Cold cache costs the most</h2></div>
+    <p class="sec-sub">Separate single-client test: a first (cold) pull makes the proxy fetch from upstream, verify, and cache; a warm pull just streams from disk. Warm serving is <b>2–5× cheaper</b> in backend CPU — the strongest lever on a small box is cache hit‑rate.</p>
+    <div class="grid2">
+      <div class="card"><h3>End‑to‑end time</h3><div class="cap">Seconds to install the set · lower is better</div>
+        <div class="legend"><span><i style="background:var(--warm)"></i>cold (fetch upstream)</span><span><i style="background:var(--good)"></i>warm (from cache)</span></div>
+        <div id="c-time"></div></div>
+      <div class="card"><h3>Backend CPU spent</h3><div class="cap">CPU‑seconds of work on the Pi · lower is better</div>
+        <div class="legend"><span><i style="background:var(--warm)"></i>cold</span><span><i style="background:var(--good)"></i>warm</span></div>
+        <div id="c-cpu"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>What it would take to go faster</h2></div>
+    <div style="margin-top:8px">
+      <div class="takeaway"><span class="tn">NET</span><p><b>Wire it up.</b> Throughput and net Mbps top out together at ~30 Mbps — the Zero 2 W's single-band 2.4 GHz radio. A board with Ethernet (Pi 4/5, CM4) is the single biggest win; the proxy has CPU to spare.</p></div>
+      <div class="takeaway"><span class="tn">CONC</span><p><b>Cap concurrency at ~8.</b> Beyond the knee the box does <em>less</em> work and fails more. A small connection limit (nginx <code>limit_conn</code>) keeps latency sane under a stampede instead of collapsing.</p></div>
+      <div class="takeaway"><span class="tn">CACHE</span><p><b>Pre-warm hot packages.</b> Cold pulls cost 2–5× the CPU and pull from upstream over that same thin radio. A high cache hit-rate is what keeps this board cool and quick.</p></div>
+      <div class="takeaway"><span class="tn">RAM</span><p><b>Move Postgres off-box</b> (or add RAM). It — not the ~20–90 MB backend — is what forces this 415 MB board onto swap; the binary itself is genuinely light.</p></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <p><b>Method.</b> Client drives a keep-alive concurrency sweep (<code>loadgen.py</code>) from a dev machine against the Pi's nginx TLS proxy; a 0.25 s sampler on the Pi records server-side CPU, memory, load, temperature and network per level. Each level runs 10 s. CPU % is of one core (the box has four). Reproducible via <code>ak-pi-zero-benchmarks/run_all.sh</code> + <code>bench_load.sh</code>. Single run, 2026-08-17 — treat as indicative, not a datasheet.</p>
+  </div>
+</div>
+
+<div class="tt" id="tt"></div>
+
+<script>
+const SWEEP=[
+ {concurrency:1,rps:16.7,p50:43.6,p95:149.6,p99:221.4,err:0,cpu:20.8,load:0.59,temp:45.1,net:9.6},
+ {concurrency:2,rps:39.5,p50:47.9,p95:78.2,p99:107.0,err:0,cpu:47.7,load:0.85,temp:48.3,net:20.8},
+ {concurrency:4,rps:52.1,p50:72.8,p95:114.3,p99:158.9,err:0,cpu:77.1,load:2.06,temp:51.5,net:29.0},
+ {concurrency:8,rps:52.1,p50:139.0,p95:246.9,p99:542.9,err:0,cpu:81.6,load:3.8,temp:53.7,net:30.7},
+ {concurrency:16,rps:33.7,p50:248.7,p95:669.6,p99:961.1,err:1.36,cpu:62.3,load:5.58,temp:55.8,net:17.3},
+ {concurrency:32,rps:24.7,p50:820.9,p95:1388.4,p99:10637.1,err:4.33,cpu:61.2,load:8.58,temp:58.0,net:12.2},
+ {concurrency:64,rps:17.1,p50:2047.1,p95:5582.5,p99:6442.8,err:9.59,cpu:56.8,load:11.47,temp:60.1,net:9.5},
+ {concurrency:96,rps:20.7,p50:2868.7,p95:7190.5,p99:7809.7,err:7.81,cpu:61.4,load:12.98,temp:61.2,net:12.0},
+ {concurrency:128,rps:22.7,p50:4409.3,p95:6993.3,p99:8724.6,err:7.69,cpu:59.4,load:14.36,temp:63.4,net:12.7}
+];
+const COLDWARM=[
+ {name:"pip / PyPI",cold_s:19.7,warm_s:7.8,cold_cpu:7.1,warm_cpu:1.3},
+ {name:"cargo / crates.io",cold_s:16.5,warm_s:7.5,cold_cpu:10.7,warm_cpu:3.9}
+];
+const tt=document.getElementById('tt');
+const X=SWEEP.map(d=>d.concurrency);
+const lx=v=>Math.log(v), LX0=lx(1), LX1=lx(128);
+const px=v=>(lx(v)-LX0)/(LX1-LX0);
+const SVGNS="http://www.w3.org/2000/svg";
+function el(n,a){const e=document.createElementNS(SVGNS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const xticks=[1,2,4,8,16,32,64,128];
+
+// Generic line chart. cfg:{mount,W,H,series:[{key,cls,dcls,label}],yscale,ymin,ymax,yticks,yfmt,knee,compact,unit}
+function lineChart(cfg){
+  const W=cfg.W||760,H=cfg.H||300,m=cfg.compact?{t:10,r:12,b:26,l:34}:{t:12,r:16,b:34,l:46};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,class:"chart"});
+  const ys=cfg.yscale==="log";
+  const y0=ys?Math.log(cfg.ymin):cfg.ymin, y1=ys?Math.log(cfg.ymax):cfg.ymax;
+  const py=v=>{v=ys?Math.log(Math.max(v,cfg.ymin)):v;return m.t+ih-(v-y0)/(y1-y0)*ih;};
+  const gx=v=>m.l+px(v)*iw;
+  const g=el("g",{class:"grid"});
+  (cfg.yticks||[]).forEach(t=>{const y=py(t);g.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:y,y2:y}));
+    const tx=el("text",{x:m.l-6,y:y+3,"text-anchor":"end",class:"tick"});tx.textContent=cfg.yfmt?cfg.yfmt(t):t;g.appendChild(tx);});
+  svg.appendChild(g);
+  const ax=el("g",{class:"axis"});ax.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:m.t+ih,y2:m.t+ih}));
+  xticks.forEach(t=>{const x=gx(t);const tx=el("text",{x:x,y:m.t+ih+15,"text-anchor":"middle",class:"tick"});tx.textContent=t;ax.appendChild(tx);});
+  svg.appendChild(ax);
+  if(cfg.knee!=null){const x=gx(cfg.knee);svg.appendChild(el("line",{x1:x,x2:x,y1:m.t,y2:m.t+ih,class:"knee"}));
+    const kt=el("text",{x:x+5,y:m.t+11,class:"knee-txt"});kt.textContent="knee";svg.appendChild(kt);}
+  cfg.series.forEach(s=>{
+    if(s.area){let d=`M ${gx(X[0])} ${py(SWEEP[0][s.key])}`;SWEEP.forEach(r=>d+=` L ${gx(r.concurrency)} ${py(r[s.key])}`);
+      d+=` L ${gx(X[X.length-1])} ${m.t+ih} L ${gx(X[0])} ${m.t+ih} Z`;svg.appendChild(el("path",{d,class:"area-tput"}));}
+    let d="";SWEEP.forEach((r,i)=>d+=(i?" L ":"M ")+gx(r.concurrency)+" "+py(r[s.key]));
+    svg.appendChild(el("path",{d,class:"serie "+s.cls}));
+  });
+  cfg.series.forEach(s=>SWEEP.forEach(r=>{
+    svg.appendChild(el("circle",{cx:gx(r.concurrency),cy:py(r[s.key]),r:cfg.compact?2.6:3.2,class:"dot "+s.dcls}));
+  }));
+  // hover
+  const cross=el("line",{class:"crosshair",y1:m.t,y2:m.t+ih});svg.appendChild(cross);
+  const hit=el("rect",{x:m.l,y:m.t,width:iw,height:ih,fill:"transparent"});svg.appendChild(hit);
+  const host=cfg.mount;host.appendChild(svg);
+  function move(ev){
+    const r=svg.getBoundingClientRect();const rel=(ev.clientX-r.left)/r.width*W;
+    let best=0,bd=1e9;SWEEP.forEach((d,i)=>{const dd=Math.abs(gx(d.concurrency)-rel);if(dd<bd){bd=dd;best=i;}});
+    const d=SWEEP[best];cross.setAttribute("x1",gx(d.concurrency));cross.setAttribute("x2",gx(d.concurrency));cross.style.opacity=1;
+    let rows=cfg.series.map(s=>`<div class="tr"><i style="background:var(${s.color})"></i><b>${cfg.yfmt?cfg.yfmt(d[s.key]):d[s.key]}</b>&nbsp;${s.label||""}</div>`).join("");
+    tt.innerHTML=`<div class="th">${d.concurrency} client${d.concurrency>1?"s":""}</div>${rows}`;
+    tt.style.left=ev.clientX+"px";tt.style.top=ev.clientY+"px";tt.style.opacity=1;
+  }
+  hit.addEventListener("mousemove",move);
+  hit.addEventListener("mouseleave",()=>{tt.style.opacity=0;cross.style.opacity=0;});
+}
+
+lineChart({mount:document.getElementById("c-tput"),ymin:0,ymax:60,yticks:[0,15,30,45,60],knee:8,
+  series:[{key:"rps",cls:"s-tput",dcls:"d-tput",area:true,color:"--accent",label:"req/s"}]});
+
+lineChart({mount:document.getElementById("c-lat"),yscale:"log",ymin:30,ymax:12000,yticks:[30,100,300,1000,3000,10000],
+  yfmt:v=>v>=1000?(v/1000)+"s":v+"ms",
+  series:[
+   {key:"p50",cls:"s-l1",dcls:"d-l1",color:"--lat1",label:"p50"},
+   {key:"p95",cls:"s-l2",dcls:"d-l2",color:"--lat2",label:"p95"},
+   {key:"p99",cls:"s-l3",dcls:"d-l3",color:"--lat3",label:"p99"}]});
+
+// small multiples
+const MINIS=[
+ {key:"err",cls:"s-err",dcls:"d-err",color:"--crit",label:"Errors",unit:"% peak",ymax:12,yt:[0,6,12],dec:1},
+ {key:"net",cls:"s-net",dcls:"d-net",color:"--accent",label:"Network",unit:"Mbps peak",ymax:35,yt:[0,15,30],dec:0},
+ {key:"cpu",cls:"s-cpu",dcls:"d-cpu",color:"--warm",label:"Backend CPU",unit:"% of 1 core",ymax:100,yt:[0,50,100],dec:0},
+ {key:"load",cls:"s-load",dcls:"d-load",color:"--amber",label:"Load avg",unit:"peak · 4 cores",ymax:16,yt:[0,8,16],dec:0},
+ {key:"temp",cls:"s-temp",dcls:"d-temp",color:"--crit",label:"SoC temp",unit:"°C peak",ymin:40,ymax:66,yt:[40,53,66],dec:0}
+];
+const mm=document.getElementById("minis");
+MINIS.forEach(s=>{
+  const card=document.createElement("div");card.className="mini";
+  const peak=Math.max(...SWEEP.map(r=>r[s.key])).toFixed(s.dec);
+  card.innerHTML=`<div class="mk">${s.label}</div><div class="mv">${peak} <small>${s.unit}</small></div>`;
+  const holder=document.createElement("div");card.appendChild(holder);mm.appendChild(card);
+  lineChart({mount:holder,W:220,H:110,compact:true,ymin:s.ymin||0,ymax:s.ymax,yticks:s.yt,
+    series:[{key:s.key,cls:s.cls,dcls:s.dcls,color:s.color,label:s.unit}]});
+});
+
+// grouped bars for cold/warm
+function bars(mountId,key,fmt,ymax,unit){
+  const W=380,H=210,m={t:14,r:10,b:40,l:38},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,class:"chart"});
+  const py=v=>m.t+ih-v/ymax*ih;
+  const g=el("g",{class:"grid"});[0,ymax/2,ymax].forEach(t=>{const y=py(t);g.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:y,y2:y}));
+    const tx=el("text",{x:m.l-6,y:y+3,"text-anchor":"end",class:"tick"});tx.textContent=t;g.appendChild(tx);});svg.appendChild(g);
+  const gw=iw/COLDWARM.length, bw=30, gap=10;
+  COLDWARM.forEach((d,i)=>{
+    const cx=m.l+gw*i+gw/2;
+    const cold=d["cold_"+key],warm=d["warm_"+key];
+    [["--warm",cold,-1],["--good",warm,1]].forEach(([col,val,side])=>{
+      const x=cx+side*(gap/2)+(side<0?-bw:0);
+      const y=py(val),h=m.t+ih-y;
+      svg.appendChild(el("rect",{x,y,width:bw,height:Math.max(h,0),rx:4,fill:`var(${col})`}));
+      const lb=el("text",{x:x+bw/2,y:y-5,"text-anchor":"middle",class:"tick",fill:"var(--ink)"});lb.textContent=fmt(val);svg.appendChild(lb);
+    });
+    const nm=el("text",{x:cx,y:m.t+ih+16,"text-anchor":"middle",class:"tick"});nm.textContent=d.name;svg.appendChild(nm);
+  });
+  const ul=el("text",{x:m.l-6,y:m.t-3,"text-anchor":"end",class:"tick"});ul.textContent=unit;svg.appendChild(ul);
+  document.getElementById(mountId).appendChild(svg);
+}
+bars("c-time","s",v=>v.toFixed(0)+"s",22,"s");
+bars("c-cpu","cpu",v=>v.toFixed(1),12,"CPU·s");
+</script>

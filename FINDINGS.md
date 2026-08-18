@@ -55,3 +55,32 @@ times the CPU of the *warm* path (serve-from-cache).
   high cache hit rate, keeps this board cool and responsive.
 - **Cargo-style many-small-file registries stress the box more than byte volume
   suggests** — request fan-out, not MB, is what spikes load here.
+
+---
+
+## Max-out load sweep (concurrency 1 → 128)
+
+A separate stress test: ramp parallel keep-alive clients hammering **one warm-cached
+70 KB wheel**, to find the ceiling. Shareable dashboard:
+**https://claude.ai/code/artifact/9a54eced-da44-4fcc-8769-1283d53e2391**
+
+| clients | req/s | p95 latency | errors | net Mbps | backend CPU (%/core) | load | °C |
+|--------:|------:|------------:|-------:|---------:|---------------------:|-----:|---:|
+| 1 | 17 | 150 ms | 0% | 10 | 21 | 0.6 | 45 |
+| 4 | **52** | 114 ms | 0% | 29 | 77 | 2.1 | 52 |
+| 8 | **52** | 247 ms | 0% | **31** | 82 | 3.8 | 54 |
+| 16 | 34 | 670 ms | 1.4% | 17 | 62 | 5.6 | 56 |
+| 32 | 25 | 1.4 s | 4.3% | 12 | 61 | 8.6 | 58 |
+| 64 | 17 | 5.6 s | 9.6% | 10 | 57 | 11.5 | 60 |
+| 128 | 23 | 7.0 s | 7.7% | 13 | 59 | 14.4 | 63 |
+
+**What maxes it out:** throughput peaks at **~52 req/s (~30 Mbps) at concurrency 4–8**,
+then *collapses* — more clients make it slower and start erroring. The bottleneck is
+the **2.4 GHz Wi-Fi (~30 Mbps)**, not compute: the backend never burns even one of
+the four cores (peaks ~82% of a single core), and net-Mbps plateaus in lockstep with
+req/s. Load climbs to ~14 and the SoC to 63 °C purely from queued connections.
+
+**To go faster:** wired Ethernet / a better radio (Pi 4/5 or CM4) is the #1 win — the
+proxy has CPU headroom. Cap concurrency ~8 (`limit_conn`) so a stampede degrades
+gracefully instead of collapsing. Keep cache hit-rate high (cold pulls cost 2–5× CPU
+*and* ride that same thin radio to upstream).

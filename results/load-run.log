@@ -1,0 +1,24 @@
+[36m[22:14:03][0m === max-out load sweep (20260817-221403) — target: idna wheel (cached) ===
+[36m[22:14:03][0m warming cache
+warm fetch -> 200, 70442 bytes
+[36m[22:14:05][0m sampler started (interval 0.25s)
+[36m[22:14:12][0m concurrency=1 for 10s
+  -> {"concurrency": 1, "duration_s": 10.03, "requests": 167, "errors": 0, "rps": 16.7, "error_rate": 0.0, "bytes": 11763814, "mbps": 9.4, "p50_ms": 43.6, "p95_ms": 149.6, "p99_ms": 221.4, "max_ms": 258.1}
+[36m[22:14:26][0m concurrency=2 for 10s
+  -> {"concurrency": 2, "duration_s": 10.04, "requests": 397, "errors": 0, "rps": 39.5, "error_rate": 0.0, "bytes": 27965474, "mbps": 22.3, "p50_ms": 47.9, "p95_ms": 78.2, "p99_ms": 107.0, "max_ms": 193.8}
+[36m[22:14:42][0m concurrency=4 for 10s
+  -> {"concurrency": 4, "duration_s": 10.06, "requests": 524, "errors": 0, "rps": 52.1, "error_rate": 0.0, "bytes": 36911608, "mbps": 29.4, "p50_ms": 72.8, "p95_ms": 114.3, "p99_ms": 158.9, "max_ms": 223.1}
+[36m[22:14:56][0m concurrency=8 for 10s
+  -> {"concurrency": 8, "duration_s": 10.11, "requests": 527, "errors": 0, "rps": 52.1, "error_rate": 0.0, "bytes": 37122934, "mbps": 29.4, "p50_ms": 139.0, "p95_ms": 246.9, "p99_ms": 542.9, "max_ms": 656.4}
+[36m[22:15:10][0m concurrency=16 for 10s
+  -> {"concurrency": 16, "duration_s": 12.93, "requests": 435, "errors": 6, "rps": 33.7, "error_rate": 0.0136, "bytes": 30642270, "mbps": 19.0, "p50_ms": 248.7, "p95_ms": 669.6, "p99_ms": 961.1, "max_ms": 5176.2}
+[36m[22:15:27][0m concurrency=32 for 10s
+  -> {"concurrency": 32, "duration_s": 10.72, "requests": 265, "errors": 12, "rps": 24.7, "error_rate": 0.0433, "bytes": 18667130, "mbps": 13.9, "p50_ms": 820.9, "p95_ms": 1388.4, "p99_ms": 10637.1, "max_ms": 10673.2}
+[36m[22:15:42][0m concurrency=64 for 10s
+  -> {"concurrency": 64, "duration_s": 15.42, "requests": 264, "errors": 28, "rps": 17.1, "error_rate": 0.0959, "bytes": 18596688, "mbps": 9.6, "p50_ms": 2047.1, "p95_ms": 5582.5, "p99_ms": 6442.8, "max_ms": 10659.2}
+[36m[22:16:01][0m concurrency=96 for 10s
+  -> {"concurrency": 96, "duration_s": 14.82, "requests": 307, "errors": 26, "rps": 20.7, "error_rate": 0.0781, "bytes": 21625694, "mbps": 11.7, "p50_ms": 2868.7, "p95_ms": 7190.5, "p99_ms": 7809.7, "max_ms": 7936.0}
+[36m[22:16:20][0m concurrency=128 for 10s
+  -> {"concurrency": 128, "duration_s": 14.3, "requests": 324, "errors": 27, "rps": 22.7, "error_rate": 0.0769, "bytes": 22823208, "mbps": 12.8, "p50_ms": 4409.3, "p95_ms": 6993.3, "p99_ms": 8724.6, "max_ms": 10019.0}
+[36m[22:16:46][0m sampler stopped;      123 rows -> results/load-20260817-221403.csv
+[36m[22:16:46][0m wrote results/load-20260817-221403.csv and results/load-20260817-221403.load.json
